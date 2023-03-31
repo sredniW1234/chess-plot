@@ -4,6 +4,7 @@ import matplotlib.colors as pltc
 import PySimpleGUI as sg
 import Functions as f
 
+
 notation = input("Chess Notation: ")
 f.notation_to_data(notation)
 
