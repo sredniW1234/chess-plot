@@ -12,7 +12,7 @@ def notation_to_data(notation):
 
     # White starting position
     pa2, pb2, pc2, pd2, pe2, pf2, pg2, ph2 = [12], [22], [32], [42], [52], [62], [72], [82]
-    ra1, rh8 = [11], [81]
+    ra1, rh1 = [11], [81]
     nb1, ng1 = [21], [71]
     bc1, bf1 = [31], [61]
     qd1 = [41]
@@ -26,75 +26,73 @@ def notation_to_data(notation):
     qd8 = [48]
     ke8 = [58]
 
+    # Piece groups
+    nights = [nb1, ng1, nb8, ng8]
+    rooks = [ra1, rh1, ra8, rh8]
+    bishops = [bc1, bf1, bc8, bf8]
+    pawns = [pa2, pb2, pc2, pd2, pe2, pf2, pg2, ph2, pa7, pb7, pc7, pd7, pe7, pf7, pg7, ph7]
+    all_pieces = [pa2, pb2, pc2, pd2, pe2, pf2, pg2, ph2, ra1, rh1, nb1, ng1, bc1, bf1, qd1, ke1, pa7, pb7, pc7, pd7, pe7, pf7, pg7, ph7, ra8, rh8, nb8, ng8, bc8, bf8, qd8, ke8]
+
     # Convert notation to numbers
     print(note)
     for i in range(len(note)):
+        note[i] = note[i].replace("a", "_1")
+        note[i] = note[i].replace("b", "_2")
+        note[i] = note[i].replace("c", "_3")
+        note[i] = note[i].replace("d", "_4")
+        note[i] = note[i].replace("e", "_5")
+        note[i] = note[i].replace("f", "_6")
+        note[i] = note[i].replace("g", "_7")
+        note[i] = note[i].replace("h", "_8")
+        note[i] = note[i].lower()
+
+    # Determine black and white pieces
+    for i, tempo in enumerate(note):
         if i % 2:
-            note[i] = note[i].replace("a", "-B1")
-            note[i] = note[i].replace("b", "-B2")
-            note[i] = note[i].replace("c", "-B3")
-            note[i] = note[i].replace("d", "-B4")
-            note[i] = note[i].replace("e", "-B5")
-            note[i] = note[i].replace("f", "-B6")
-            note[i] = note[i].replace("g", "-B7")
-            note[i] = note[i].replace("h", "-B8")
-            note[i] = note[i].lower()
+            note[i] = "b-" + note[i]
         else:
-            note[i] = note[i].replace("a", "-W1")
-            note[i] = note[i].replace("b", "-W2")
-            note[i] = note[i].replace("c", "-W3")
-            note[i] = note[i].replace("d", "-W4")
-            note[i] = note[i].replace("e", "-W5")
-            note[i] = note[i].replace("f", "-W6")
-            note[i] = note[i].replace("g", "-W7")
-            note[i] = note[i].replace("h", "-W8")
-            note[i] = note[i].lower()
+            note[i] = "w-" + note[i]
     print(note)
 
     # update notation for all pieces
-    for i in range(len(note)):
-        # update horse movement white
-        if "n-w" in note[i]:
-            note_number = int(note[i].split("-w")[1])
-            if note_number + 12 == nb1[-1] or note_number + 21 == nb1[-1] or note_number + 19 == nb1[-1] or note_number\
-                    + 8 == nb1[-1] or note_number - 12 == nb1[-1] or note_number - 21 == nb1[-1] or \
-                    note_number - 19 == nb1[-1] or note_number - 8 == nb1[-1]:
-                nb1.append(note_number)
-                print(nb1)
-            if note_number + 12 == ng1[-1] or note_number + 21 == ng1[-1] or note_number + 19 == ng1[-1] or note_number\
-                    + 8 == ng1[-1] or note_number - 12 == ng1[-1] or note_number - 21 == ng1[-1] or \
-                    note_number - 19 == ng1[-1] or note_number - 8 == ng1[-1]:
-                ng1.append(note_number)
-                print(ng1)
+    for i, tempo in enumerate(note):
+        # Check if its whites tempo
+        if "w-" in tempo:
+            # Example: 1. e4 c6 2. d4 d5 3. e5 Bf5
+            # Example 2: 1. Ndc4 Kg6 2. Nd2 Kh6 3. Nb2c4 Kg6 4. Nb2 Kh6 5. N6c4 Kg6 6. Nb6 Kh6
+            # part the w-
+            tempo = tempo.split("w-")[1]
 
-        # update horse movement black
-        if "n-b" in note[i]:
-            note_number = int(note[i].split("-b")[1])
-            if note_number + 12 == nb8[-1] or note_number + 21 == nb8[-1] or note_number + 19 == nb8[-1] or note_number\
-                    + 8 == nb8[-1] or note_number - 12 == nb8[-1] or note_number - 21 == nb8[-1] or \
-                    note_number - 19 == nb8[-1] or note_number - 8 == nb8[-1]:
-                nb8.append(note_number)
-                print(nb8)
-            if note_number + 12 == ng8[-1] or note_number + 21 == ng8[-1] or note_number + 19 == ng8[-1] or note_number\
-                    + 8 == ng8[-1] or note_number - 12 == ng8[-1] or note_number - 21 == ng8[-1] or \
-                    note_number - 19 == ng8[-1] or note_number - 8 == ng8[-1]:
-                ng8.append(note_number)
-                print(ng8)
-
-        if "b-w" in note[i]:
-            note_number = note[i].split("-w")[1]
-            if int(note_number[0]) % 2 and not int(note_number[1]) % 2:
-                bf1.append(note_number)
-            elif not int(note_number[0]) % 2 and int(note_number[1]) % 2:
-                bf1.append(note_number)
+            # if taking
+            if "x" in tempo:
+                # Case #1: nx_34 n n
+                if not tempo[1].isnumeric() and not tempo[2].isnumeric():
+                    print(tempo, "case1")
+                # Case #2: n6x_34 y n
+                elif tempo[1].isnumeric() and not tempo[2].isnumeric():
+                    print(tempo, "case2")
+                # case #3: n_4x_34 n y n
+                elif not tempo[1].isnumeric() and tempo[2].isnumeric() and not tempo[3].isnumeric():
+                    print(tempo, "case3")
+                # case #4: n_22x_34 n y y
+                elif not tempo[1].isnumeric and tempo[2].isnumeric() and tempo[3].isnumeric():
+                    print(tempo, "case4")
             else:
-                bc1.append(note_number)
-
-        if "b-b" in note[i]:
-            note_number = note[i].split("-b")[1]
-            if int(note_number[0]) % 2 and not int(note_number[1]) % 2:
-                bf8.append(note_number)
-            elif not int(note_number[0]) % 2 and int(note_number[1]) % 2:
-                bf8.append(note_number)
-            else:
-                bc8.append(note_number)
+                try:
+                    if tempo[4] != None:
+                        fourthI = True
+                except IndexError:
+                    fourthI = False
+                print(fourthI, tempo, not fourthI)
+                # Case #1: n_34 n y y e
+                if not tempo[1].isnumeric() and tempo[2].isnumeric() and tempo[3].isnumeric() and fourthI != True:
+                    print(tempo, "case1")
+                # Case #2: n6_34 y n
+                elif tempo[1].isnumeric() and not tempo[2].isnumeric():
+                    print(tempo, "case2")
+                # case #3: n_4_34 n y n
+                elif not tempo[1].isnumeric() and tempo[2].isnumeric() and not tempo[3].isnumeric():
+                    print(tempo, "case3")
+                # case #4: n_22_34 n y y n
+                elif not tempo[1].isnumeric and tempo[2].isnumeric() and tempo[3].isnumeric() and not tempo[4].isnumeric:
+                    print(tempo, "case4")
