@@ -59,7 +59,7 @@ def notation_to_data(notation):
         # Check if its whites tempo
         if "w-" in tempo:
             # Example: 1. e4 c6 2. d4 d5 3. e5 Bf5
-            # Example 2: 1. Ndc4 Kg6 2. Nd2 Kh6 3. Nb2c4 Kg6 4. Nb2 Kh6 5. N6c4 Kg6 6. Nb6 Kh6
+            # Example 2: 1. Ndc4 Kg6 2. Nd2 Kh6 3. Nb2c4 Kg6 4. Nb2 Kh6 5. Ndc4 Kg6 6. Nb6 Kh6
             # part the w-
             tempo = tempo.split("w-")[1]
 
@@ -75,17 +75,15 @@ def notation_to_data(notation):
                 elif not tempo[1].isnumeric() and tempo[2].isnumeric() and not tempo[3].isnumeric():
                     print(tempo, "case3")
                 # case #4: n_22x_34 n y y
-                elif not tempo[1].isnumeric and tempo[2].isnumeric() and tempo[3].isnumeric():
+                elif not tempo[1].isnumeric() and tempo[2].isnumeric() and tempo[3].isnumeric():
                     print(tempo, "case4")
             else:
-                try:
-                    if tempo[4] != None:
-                        fourthI = True
-                except IndexError:
-                    fourthI = False
-                print(fourthI, tempo, not fourthI)
+                if len(tempo) >= 7:
+                    # Case #4: n_22_34
+                    if not tempo[1].isnumeric() and tempo[2].isnumeric() and tempo[3].isnumeric() and not tempo[4].isnumeric():
+                        print(tempo, "case4")
                 # Case #1: n_34 n y y e
-                if not tempo[1].isnumeric() and tempo[2].isnumeric() and tempo[3].isnumeric() and fourthI != True:
+                elif not tempo[1].isnumeric() and tempo[2].isnumeric() and tempo[3].isnumeric():
                     print(tempo, "case1")
                 # Case #2: n6_34 y n
                 elif tempo[1].isnumeric() and not tempo[2].isnumeric():
@@ -93,6 +91,5 @@ def notation_to_data(notation):
                 # case #3: n_4_34 n y n
                 elif not tempo[1].isnumeric() and tempo[2].isnumeric() and not tempo[3].isnumeric():
                     print(tempo, "case3")
-                # case #4: n_22_34 n y y n
-                elif not tempo[1].isnumeric and tempo[2].isnumeric() and tempo[3].isnumeric() and not tempo[4].isnumeric:
-                    print(tempo, "case4")
+                else:
+                    print(tempo, "no case")
